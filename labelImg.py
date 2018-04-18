@@ -148,6 +148,7 @@ class MainWindow(QMainWindow, WindowMixin):
 
         # Create and add a widget for showing current label items
         self.labelList = QListWidget()
+        self.labelList.setSortingEnabled(True)
         labelListContainer = QWidget()
         labelListContainer.setLayout(listLayout)
         self.labelList.itemActivated.connect(self.labelSelectionChanged)
@@ -752,6 +753,9 @@ class MainWindow(QMainWindow, WindowMixin):
     def labelItemChanged(self, item):
         shape = self.itemsToShapes[item]
         label = item.text()
+        print('------labelItemChanged------')
+        print('label:%s' % (label))
+        
         if label != shape.label:
             shape.label = item.text()
             shape.line_color = generateColorByText(shape.label)
@@ -787,7 +791,7 @@ class MainWindow(QMainWindow, WindowMixin):
             shape = self.canvas.setLastLabel(text, generate_color, generate_color)
             self.addLabel(shape)
             if self.beginner():  # Switch to edit mode.
-                self.canvas.setEditing(True)
+                self.canvas.setEditing(True)GG
                 self.actions.create.setEnabled(True)
             else:
                 self.actions.editMode.setEnabled(True)
@@ -924,6 +928,7 @@ class MainWindow(QMainWindow, WindowMixin):
                 return False
             self.status("Loaded %s" % os.path.basename(unicodeFilePath))
             self.image = image
+            # image path
             self.filePath = unicodeFilePath
             self.canvas.loadPixmap(QPixmap.fromImage(image))
             if self.labelFile:
@@ -1333,7 +1338,9 @@ def get_main_app(argv=[]):
     """
     app = QApplication(argv)
     app.setApplicationName(__appname__)
+    
     app.setWindowIcon(newIcon("app"))
+    # app.setWindowIcon(QIcon(':icons/bianlifeng.jpeg'))
     # Tzutalin 201705+: Accept extra agruments to change predefined class file
     # Usage : labelImg.py image predefClassFile
     win = MainWindow(argv[1] if len(argv) >= 2 else None,
