@@ -791,7 +791,7 @@ class MainWindow(QMainWindow, WindowMixin):
             shape = self.canvas.setLastLabel(text, generate_color, generate_color)
             self.addLabel(shape)
             if self.beginner():  # Switch to edit mode.
-                self.canvas.setEditing(True)GG
+                self.canvas.setEditing(True)
                 self.actions.create.setEnabled(True)
             else:
                 self.actions.editMode.setEnabled(True)
