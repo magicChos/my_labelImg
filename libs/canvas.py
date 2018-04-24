@@ -62,6 +62,7 @@ class Canvas(QWidget):
         self.setFocusPolicy(Qt.WheelFocus)
         self.verified = False
 
+
     def setDrawingColor(self, qColor):
         self.drawingLineColor = qColor
         self.drawingRectColor = qColor
@@ -103,6 +104,12 @@ class Canvas(QWidget):
     def mouseMoveEvent(self, ev):
         """Update line with last point and current coordinates."""
         pos = self.transformPos(ev.pos())
+
+        # Update coordinates in status bar if image is opened
+        window = self.parent().window()
+        if window.filePath is not None:
+            self.parent().window().labelCoordinates.setText(
+                'X: %d; Y: %d' % (pos.x(), pos.y()))
 
         # Polygon drawing.
         if self.drawing():

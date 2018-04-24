@@ -84,6 +84,22 @@ Python 3 + Qt5 (Works on macOS High Sierra)
     python labelImg.py
     python  labelImg.py [IMAGE_PATH] [PRE-DEFINED CLASS FILE]
 
+**NEW** Python 3 Virtualenv + Binary  
+This avoids a lot of the QT / Python version issues,
+and gives you a nice .app file with a new SVG Icon
+in your /Applications folder.
+
+.. code::
+    
+    brew install python3
+    pip install pipenv
+    pipenv --three
+    pipenv shell
+    pip install pyqt5 lxml
+    make qt5py3
+    rm -rf build dist
+    python setup.py py2app
+    cp -rf dist/labelImg.app /Applications
 
 Windows
 ^^^^^^^
@@ -98,6 +114,20 @@ Open cmd and go to `labelImg <#labelimg>`__ directory
 .. code::
 
     pyrcc4 -o resources.py resources.qrc
+    python labelImg.py
+    python labelImg.py [IMAGE_PATH] [PRE-DEFINED CLASS FILE]
+    
+Windows + anaconda
+^^^^^^^
+
+Download and install anaconda (python 3+)
+
+Open cmd and go to `labelImg <#labelimg>`__ directory
+
+.. code::
+
+    conda install pyqt=4
+    pyrcc4 -py3 -o resources.py resources.qrc
     python labelImg.py
     python labelImg.py [IMAGE_PATH] [PRE-DEFINED CLASS FILE]
 
@@ -135,7 +165,7 @@ You can pull the image which has all of the installed and required dependencies.
 Usage
 -----
 
-Steps
+Steps (PascalVOC)
 ~~~~~
 
 1. Build and launch using the instructions above.
@@ -149,6 +179,27 @@ Steps
 The annotation will be saved to the folder you specify.
 
 You can refer to the below hotkeys to speed up your workflow.
+
+Steps (YOLO)
+~~~~~
+
+1. In ``data/predefined_classes.txt`` define the list of classes that will be used for your training.
+
+2. Build and launch using the instructions above.
+
+3. Right below "Save" button in toolbar, click "PascalVOC" button to switch to YOLO format.
+
+4. You may use Open/OpenDIR to process single or multiple images. When finished with single image, click save.
+
+A txt file of yolo format will be saved in the same folder as your image with same name. A file named "classes.txt" is saved to that folder too. "classes.txt" defines the list of class names that your yolo label refers to.
+
+Note:
+
+- Your label list shall not change in the middle of processing a list of images. When you save a image, classes.txt will also get updated, while previous annotations will not be updated.
+
+- You shouldn't use "default class" function when saving to YOLO format, it will not be referred.
+
+- When saving as YOLO format, "difficult" flag is discarded.
 
 Create pre-defined classes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -204,3 +255,5 @@ Related
    download image, create a label text for machine learning, etc
 2. `Use Docker to run labelImg <https://hub.docker.com/r/tzutalin/py2qt4>`__
 3. `Generating the PASCAL VOC TFRecord files <https://github.com/tensorflow/models/blob/4f32535fe7040bb1e429ad0e3c948a492a89482d/research/object_detection/g3doc/preparing_inputs.md#generating-the-pascal-voc-tfrecord-files>`__
+4. `App Icon based on Icon by Nick Roach (GPL)` <https://www.elegantthemes.com/> <https://www.iconfinder.com/icons/1054978/shop_tag_icon> __
+
