@@ -135,8 +135,26 @@ class MainWindow(QMainWindow, WindowMixin):
         useDefaultLabelQHBoxLayout = QHBoxLayout()
         useDefaultLabelQHBoxLayout.addWidget(self.useDefaultLabelCheckbox)
         useDefaultLabelQHBoxLayout.addWidget(self.defaultLabelTextLine)
+
+        self.jump_toLabel = QLabel(u'Jump to')
+        self.jump_lineEdit = QLineEdit()
+        self.jump_lineEdit.setEnabled(False)
+        self.jump_toButton = QPushButton(u'Jump to')
+        self.jump_toButton.setEnabled(False)
+        useJumpQHBoxLayout = QHBoxLayout()
+        useJumpQHBoxLayout.addWidget(self.jump_toLabel)
+        useJumpQHBoxLayout.addWidget(self.jump_lineEdit)
+        useJumpQHBoxLayout.addWidget(self.jump_toButton)
+
+        useVBoxLayout = QVBoxLayout()
+        useVBoxLayout.addLayout(useDefaultLabelQHBoxLayout)
+        useVBoxLayout.addLayout(useJumpQHBoxLayout)
+
         useDefaultLabelContainer = QWidget()
-        useDefaultLabelContainer.setLayout(useDefaultLabelQHBoxLayout)
+        # useDefaultLabelContainer.setLayout(useDefaultLabelQHBoxLayout)
+        useDefaultLabelContainer.setLayout(useVBoxLayout)
+
+        self.jump_toButton.clicked.connect(self.buttonJumpToClicked)
 
         # Create a widget for edit and diffc button
         self.diffcButton = QCheckBox(u'difficult')
@@ -1169,6 +1187,9 @@ class MainWindow(QMainWindow, WindowMixin):
         self.img_num = len(self.mImgList)
         self.labelNum.setText(str(self.img_num))
 
+        self.jump_toButton.setEnabled(True)
+        self.jump_lineEdit.setEnabled(True)
+
 
 
     def verifyImg(self, _value=False):
@@ -1402,6 +1423,14 @@ class MainWindow(QMainWindow, WindowMixin):
         print (shapes)
         self.loadLabels(shapes)
         self.canvas.verified = tYoloParseReader.verified
+
+    def buttonJumpToClicked(self):
+        self.current_index = int(self.jump_lineEdit.text())
+        # QMessageBox.information(self , "Jump to Button" , self.jump_lineEdit.text())
+
+        self.loadFile(self.mImgList[self.current_index])
+        self.labelNum.setText('%d/%d\t' % (self.current_index, self.img_num))
+
 
 
 
