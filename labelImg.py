@@ -5,6 +5,7 @@ import os.path
 import re
 import sys
 import subprocess
+import argparse
 
 from functools import partial
 from collections import defaultdict
@@ -87,7 +88,7 @@ class HashableQListWidgetItem(QListWidgetItem):
 class MainWindow(QMainWindow, WindowMixin):
     FIT_WINDOW, FIT_WIDTH, MANUAL_ZOOM = list(range(3))
 
-    def __init__(self, defaultFilename=None, defaultPrefdefClassFile=None):
+    def __init__(self, defaultFilename=None, defaultPrefdefClassFile=None , username = None):
         super(MainWindow, self).__init__()
         self.setWindowTitle(__appname__)
 
@@ -492,6 +493,7 @@ class MainWindow(QMainWindow, WindowMixin):
 
         self.img_num = 0
         self.current_index = 0
+        self.user = username
 
 
 
@@ -787,7 +789,7 @@ class MainWindow(QMainWindow, WindowMixin):
                 annotationFilePath += XML_EXT
                 print ('Img: ' + self.filePath + ' -> Its xml: ' + annotationFilePath)
                 self.labelFile.savePascalVocFormat(annotationFilePath, shapes, self.filePath, self.imageData,
-                                                   self.lineColor.getRgb(), self.fillColor.getRgb())
+                                                   self.lineColor.getRgb(), self.fillColor.getRgb() , usrname=self.user)
             elif self.usingYoloFormat is True:
                 annotationFilePath += TXT_EXT
                 print ('Img: ' + self.filePath + ' -> Its txt: ' + annotationFilePath)
@@ -1432,8 +1434,6 @@ class MainWindow(QMainWindow, WindowMixin):
         self.labelNum.setText('%d/%d\t' % (self.current_index, self.img_num))
 
 
-
-
 def inverted(color):
     return QColor(*[255 - v for v in color.getRgb()])
 
@@ -1457,10 +1457,14 @@ def get_main_app(argv=[]):
     app.setWindowIcon(QIcon("icons/bianlifeng.jpg"))
     # Tzutalin 201705+: Accept extra agruments to change predefined class file
     # Usage : labelImg.py image predefClassFile
-    win = MainWindow(argv[1] if len(argv) >= 2 else None,
-                     argv[2] if len(argv) >= 3 else os.path.join(
+    # win = MainWindow(argv[1] if len(argv) >= 2 else None,
+    #                  argv[2] if len(argv) >= 3 else os.path.join(
+    #                      os.path.dirname(sys.argv[0]),
+    #                      'data', 'predefined_classes.txt'))
+    win = MainWindow(defaultFilename=None , defaultPrefdefClassFile=os.path.join(
                          os.path.dirname(sys.argv[0]),
-                         'data', 'predefined_classes.txt'))
+                         'data', 'predefined_classes.txt') , username=argv[1])
+    print('username:' , argv[1])
     win.show()
     return app, win
 

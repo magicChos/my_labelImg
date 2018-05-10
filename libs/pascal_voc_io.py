@@ -11,7 +11,7 @@ ENCODE_METHOD = 'utf-8'
 
 class PascalVocWriter:
 
-    def __init__(self, foldername, filename, imgSize,databaseSrc='Unknown', localImgPath=None):
+    def __init__(self, foldername, filename, imgSize,databaseSrc='Unknown', localImgPath=None , usrname = None):
         self.foldername = foldername
         self.filename = filename
         self.databaseSrc = databaseSrc
@@ -19,6 +19,7 @@ class PascalVocWriter:
         self.boxlist = []
         self.localImgPath = localImgPath
         self.verified = False
+        self.usr = usrname
 
     def prettify(self, elem):
         """
@@ -45,6 +46,9 @@ class PascalVocWriter:
         if self.verified:
             top.set('verified', 'yes')
 
+        user = SubElement(top , 'usr')
+        # print('usrname:' , self.usr)
+        user.text = str(self.usr)
         folder = SubElement(top, 'folder')
         folder.text = self.foldername
 

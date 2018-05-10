@@ -30,7 +30,7 @@ class LabelFile(object):
         self.verified = False
 
     def savePascalVocFormat(self, filename, shapes, imagePath, imageData,
-                            lineColor=None, fillColor=None, databaseSrc=None):
+                            lineColor=None, fillColor=None, databaseSrc=None , usrname = None):
         imgFolderPath = os.path.dirname(imagePath)
         imgFolderName = os.path.split(imgFolderPath)[-1]
         imgFileName = os.path.basename(imagePath)
@@ -42,7 +42,7 @@ class LabelFile(object):
         imageShape = [image.height(), image.width(),
                       1 if image.isGrayscale() else 3]
         writer = PascalVocWriter(imgFolderName, imgFileName,
-                                 imageShape, localImgPath=imagePath)
+                                 imageShape, localImgPath=imagePath , usrname=usrname)
         writer.verified = self.verified
 
         for shape in shapes:
