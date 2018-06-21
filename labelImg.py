@@ -1169,7 +1169,7 @@ class MainWindow(QMainWindow, WindowMixin):
                                                      '%s - Open Directory' % __appname__, defaultOpenDirPath,
                                                      QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
-
+        self.current_index = 0
         self.importDirImages(targetDirPath)
 
     def importDirImages(self, dirpath):
@@ -1187,7 +1187,7 @@ class MainWindow(QMainWindow, WindowMixin):
             self.fileListWidget.addItem(item)
 
         self.img_num = len(self.mImgList)
-        self.labelNum.setText(str(self.img_num))
+        self.labelNum.setText('%d/%d\t' % (self.current_index, self.img_num))
 
         self.jump_toButton.setEnabled(True)
         self.jump_lineEdit.setEnabled(True)
