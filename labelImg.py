@@ -6,6 +6,7 @@ import re
 import sys
 import subprocess
 import argparse
+import glob
 
 from functools import partial
 from collections import defaultdict
@@ -485,6 +486,9 @@ class MainWindow(QMainWindow, WindowMixin):
 
         self.labelNum = QLabel('')
         self.statusBar().addPermanentWidget(self.labelNum)
+        
+        self.xml_labelNum = QLabel('')
+        self.statusBar().addPermanentWidget(self.xml_labelNum)
 
         # Display cursor coordinates at the right of status bar
         self.labelCoordinates = QLabel('')
@@ -494,6 +498,9 @@ class MainWindow(QMainWindow, WindowMixin):
         self.img_num = 0
         self.current_index = 0
         self.user = username
+        self.xmlNum = 0
+        
+        self.save_xml_dirPath = ''
 
 
 
@@ -1135,6 +1142,12 @@ class MainWindow(QMainWindow, WindowMixin):
         if dirpath is not None and len(dirpath) > 1:
             self.defaultSaveDir = dirpath
 
+
+        self.xmlNum = len(glob.glob(dirpath + "/*.xml"))
+        self.xml_labelNum.setText('xml:%d\t' % (self.xmlNum))
+        
+        self.save_xml_dirPath = dirpath
+
         self.statusBar().showMessage('%s . Annotation will be saved to %s' %
                                      ('Change saved folder', self.defaultSaveDir))
         self.statusBar().show()
@@ -1227,6 +1240,7 @@ class MainWindow(QMainWindow, WindowMixin):
 
         if self.filePath is None:
             return
+        
 
         currIndex = self.mImgList.index(self.filePath)
         if currIndex - 1 >= 0:
@@ -1235,6 +1249,13 @@ class MainWindow(QMainWindow, WindowMixin):
                 self.loadFile(filename)
                 self.current_index -= 1
                 self.labelNum.setText('%d/%d\t' % (self.current_index, self.img_num))
+		
+		
+        xml_num = len(glob.glob(self.save_xml_dirPath + "/*.xml"))
+        self.xml_labelNum.setText('xml:%d\t' % (xml_num))
+			    
+		
+		
 
     def openNextImg(self, _value=False):
         # Proceding prev image without dialog if having any label
@@ -1264,6 +1285,9 @@ class MainWindow(QMainWindow, WindowMixin):
             self.loadFile(filename)
             self.current_index += 1
             self.labelNum.setText('%d/%d\t' %(self.current_index , self.img_num))
+
+        xml_num = len(glob.glob(self.save_xml_dirPath + "/*.xml"))
+        self.xml_labelNum.setText('xml:%d\t' % (xml_num))
 
 
 
