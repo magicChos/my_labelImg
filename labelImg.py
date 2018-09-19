@@ -1301,7 +1301,6 @@ class MainWindow(QMainWindow, WindowMixin):
             self.loadFile(filename)
             self.current_index += 1
             self.labelNum.setText('%d/%d\t' %(self.current_index , self.img_num))
-            print('----:' , os.path.basename(filename))
             self.current_nameEdit.setText(str(os.path.basename(filename)))
 
         xml_num = len(glob.glob(self.save_xml_dirPath + "/*.xml"))
