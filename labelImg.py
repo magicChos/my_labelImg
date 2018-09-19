@@ -143,14 +143,25 @@ class MainWindow(QMainWindow, WindowMixin):
         self.jump_lineEdit.setEnabled(False)
         self.jump_toButton = QPushButton(u'Jump to')
         self.jump_toButton.setEnabled(False)
+
         useJumpQHBoxLayout = QHBoxLayout()
         useJumpQHBoxLayout.addWidget(self.jump_toLabel)
         useJumpQHBoxLayout.addWidget(self.jump_lineEdit)
         useJumpQHBoxLayout.addWidget(self.jump_toButton)
 
+        self.current_nameLabel = QLabel(u'Current Name')
+        self.current_nameEdit = QLineEdit()
+        self.current_nameEdit.setEnabled(True)
+        self.current_nameEdit.setReadOnly(True)
+
+        useCurrentNameQHBoxLayout = QHBoxLayout()
+        useCurrentNameQHBoxLayout.addWidget(self.current_nameLabel)
+        useCurrentNameQHBoxLayout.addWidget(self.current_nameEdit)
+
         useVBoxLayout = QVBoxLayout()
         useVBoxLayout.addLayout(useDefaultLabelQHBoxLayout)
         useVBoxLayout.addLayout(useJumpQHBoxLayout)
+        useVBoxLayout.addLayout(useCurrentNameQHBoxLayout)
 
         useDefaultLabelContainer = QWidget()
         # useDefaultLabelContainer.setLayout(useDefaultLabelQHBoxLayout)
@@ -1038,6 +1049,9 @@ class MainWindow(QMainWindow, WindowMixin):
 
             self.setWindowTitle(__appname__ + ' ' + filePath)
 
+            self.current_nameEdit.setText(os.path.basename(filePath))
+
+
             # Default : select last item if there is at least one item
             if self.labelList.count():
                 self.labelList.setCurrentItem(self.labelList.item(self.labelList.count()-1))
@@ -1249,6 +1263,8 @@ class MainWindow(QMainWindow, WindowMixin):
                 self.loadFile(filename)
                 self.current_index -= 1
                 self.labelNum.setText('%d/%d\t' % (self.current_index, self.img_num))
+
+                self.current_nameEdit.setText(os.path.basename(filename))
 		
 		
         xml_num = len(glob.glob(self.save_xml_dirPath + "/*.xml"))
@@ -1285,9 +1301,12 @@ class MainWindow(QMainWindow, WindowMixin):
             self.loadFile(filename)
             self.current_index += 1
             self.labelNum.setText('%d/%d\t' %(self.current_index , self.img_num))
+            print('----:' , os.path.basename(filename))
+            self.current_nameEdit.setText(str(os.path.basename(filename)))
 
         xml_num = len(glob.glob(self.save_xml_dirPath + "/*.xml"))
         self.xml_labelNum.setText('xml:%d\t' % (xml_num))
+
 
 
 
@@ -1302,6 +1321,7 @@ class MainWindow(QMainWindow, WindowMixin):
             if isinstance(filename, (tuple, list)):
                 filename = filename[0]
             self.loadFile(filename)
+            self.current_nameEdit.setText(os.path.basename(filename))
 
     def saveFile(self, _value=False):
         if self.defaultSaveDir is not None and len(ustr(self.defaultSaveDir)):
