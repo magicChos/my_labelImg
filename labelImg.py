@@ -149,6 +149,18 @@ class MainWindow(QMainWindow, WindowMixin):
         useJumpQHBoxLayout.addWidget(self.jump_lineEdit)
         useJumpQHBoxLayout.addWidget(self.jump_toButton)
 
+        self.find_imgLabel = QLabel(u'Find image')
+        self.find_lineEdit = QLineEdit()
+        self.find_lineEdit.setEnabled(False)
+        self.find_Button = QPushButton(u'Search')
+        self.find_Button.setEnabled(False)
+
+        findQHBoxLayout = QHBoxLayout()
+        findQHBoxLayout.addWidget(self.find_imgLabel)
+        findQHBoxLayout.addWidget(self.find_lineEdit)
+        findQHBoxLayout.addWidget(self.find_Button)
+
+
         self.current_nameLabel = QLabel(u'Current Name')
         self.current_nameEdit = QLineEdit()
         self.current_nameEdit.setEnabled(True)
@@ -161,6 +173,7 @@ class MainWindow(QMainWindow, WindowMixin):
         useVBoxLayout = QVBoxLayout()
         useVBoxLayout.addLayout(useDefaultLabelQHBoxLayout)
         useVBoxLayout.addLayout(useJumpQHBoxLayout)
+        useVBoxLayout.addLayout(findQHBoxLayout)
         useVBoxLayout.addLayout(useCurrentNameQHBoxLayout)
 
         useDefaultLabelContainer = QWidget()
@@ -168,6 +181,7 @@ class MainWindow(QMainWindow, WindowMixin):
         useDefaultLabelContainer.setLayout(useVBoxLayout)
 
         self.jump_toButton.clicked.connect(self.buttonJumpToClicked)
+        self.find_Button.clicked.connect(self.buttonSearch)
 
         # Create a widget for edit and diffc button
         self.diffcButton = QCheckBox(u'difficult')
@@ -280,6 +294,8 @@ class MainWindow(QMainWindow, WindowMixin):
 
         color1 = action('Box Line Color', self.chooseColor1,
                         'Ctrl+L', 'color_line', u'Choose Box line color')
+
+        # find_img = action('Find image' , self.findImage , 'Ctrl+f' , 'Find_image' , u'find image with image name')
 
         createMode = action('Create\nRectBox', self.setCreateMode,
                             'w', 'new', u'Start drawing Boxs', enabled=False)
@@ -1218,6 +1234,8 @@ class MainWindow(QMainWindow, WindowMixin):
 
         self.jump_toButton.setEnabled(True)
         self.jump_lineEdit.setEnabled(True)
+        self.find_Button.setEnabled(True)
+        self.find_lineEdit.setEnabled(True)
 
 
 
@@ -1401,6 +1419,9 @@ class MainWindow(QMainWindow, WindowMixin):
             self.canvas.update()
             self.setDirty()
 
+    def findImage(self):
+        pass
+
     def deleteSelectedShape(self):
         self.remLabel(self.canvas.deleteSelected())
         self.setDirty()
@@ -1475,6 +1496,14 @@ class MainWindow(QMainWindow, WindowMixin):
 
         self.loadFile(self.mImgList[self.current_index])
         self.labelNum.setText('%d/%d\t' % (self.current_index, self.img_num))
+
+    def buttonSearch(self):
+        self.current_imageName = self.find_lineEdit.text()
+        base_dir = os.path.dirname(self.mImgList[0])
+
+        if os.path.exists(os.path.join(base_dir , self.current_imageName)):
+            self.loadFile(os.path.join(base_dir , self.current_imageName))
+            self.labelNum.setText('%d/%d\t' % (self.mImgList.index(os.path.join(base_dir , self.current_imageName)) , self.img_num))
 
 
 def inverted(color):
