@@ -1500,10 +1500,15 @@ class MainWindow(QMainWindow, WindowMixin):
     def buttonSearch(self):
         self.current_imageName = self.find_lineEdit.text()
         base_dir = os.path.dirname(self.mImgList[0])
-
-        if os.path.exists(os.path.join(base_dir , self.current_imageName)):
-            self.loadFile(os.path.join(base_dir , self.current_imageName))
-            self.labelNum.setText('%d/%d\t' % (self.mImgList.index(os.path.join(base_dir , self.current_imageName)) , self.img_num))
+        
+        
+        # if os.path.exists(os.path.join(base_dir , str(self.current_imageName))):
+        #     self.loadFile(os.path.join(base_dir , self.current_imageName))
+        #     self.labelNum.setText('%d/%d\t' % (self.mImgList.index(os.path.join(base_dir , self.current_imageName)) , self.img_num))
+        
+        if os.path.exists(base_dir + "/" + self.current_imageName):
+            self.loadFile(base_dir + "/" + self.current_imageName)
+            self.labelNum.setText('%d/%d\t' % (self.mImgList.index(base_dir + "/" + self.current_imageName) , self.img_num))
 
 
 def inverted(color):
