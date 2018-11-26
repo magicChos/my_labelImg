@@ -810,7 +810,6 @@ class MainWindow(QMainWindow, WindowMixin):
 
     def saveLabels(self, annotationFilePath):
         annotationFilePath = ustr(annotationFilePath)
-        print('*******:' , annotationFilePath)
         if self.labelFile is None:
             self.labelFile = LabelFile()
             self.labelFile.verified = self.canvas.verified
@@ -1222,8 +1221,6 @@ class MainWindow(QMainWindow, WindowMixin):
                                                      QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
         self.save_xml_dirPat = targetDirPath
-        print('******************************************')
-        print(targetDirPath)
         self.current_index = 0
         self.importDirImages(targetDirPath)
 
