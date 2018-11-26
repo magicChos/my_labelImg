@@ -99,7 +99,7 @@ class MainWindow(QMainWindow, WindowMixin):
         settings = self.settings
 
         # Save as Pascal voc xml
-        self.defaultSaveDir = None
+        # self.defaultSaveDir = None
         self.usingPascalVocFormat = True
         self.usingYoloFormat = False
 
@@ -266,6 +266,8 @@ class MainWindow(QMainWindow, WindowMixin):
 
         changeSavedir = action('&Change Save Dir', self.changeSavedirDialog,
                                'Ctrl+r', 'open', u'Change default saved Annotation dir')
+        changeSavedir.setEnabled(False)
+
 
         openAnnotation = action('&Open Annotation', self.openAnnotationDialog,
                                 'Ctrl+Shift+O', 'open', u'Open Annotation')
@@ -528,10 +530,14 @@ class MainWindow(QMainWindow, WindowMixin):
         self.xmlNum = 0
         
         self.save_xml_dirPath = ''
+        # self.save_xml_dirPath = self.dirname
+        self.defaultSaveDir = self.dirname
 
 
 
         # Open Dir if deafult file
+        print(self.filePath)
+
         if self.filePath and os.path.isdir(self.filePath):
             self.openDirDialog(dirpath=self.filePath)
 
@@ -804,6 +810,7 @@ class MainWindow(QMainWindow, WindowMixin):
 
     def saveLabels(self, annotationFilePath):
         annotationFilePath = ustr(annotationFilePath)
+        print('*******:' , annotationFilePath)
         if self.labelFile is None:
             self.labelFile = LabelFile()
             self.labelFile.verified = self.canvas.verified
@@ -1165,10 +1172,11 @@ class MainWindow(QMainWindow, WindowMixin):
         else:
             path = '.'
 
-        dirpath = ustr(QFileDialog.getExistingDirectory(self,
-                                                       '%s - Save annotations to the directory' % __appname__, path,  QFileDialog.ShowDirsOnly
-                                                       | QFileDialog.DontResolveSymlinks))
+        # dirpath = ustr(QFileDialog.getExistingDirectory(self,
+        #                                                '%s - Save annotations to the directory' % __appname__, path,  QFileDialog.ShowDirsOnly
+        #                                                | QFileDialog.DontResolveSymlinks))
 
+        dirpath = self.save_xml_dirPath
         if dirpath is not None and len(dirpath) > 1:
             self.defaultSaveDir = dirpath
 
@@ -1203,6 +1211,7 @@ class MainWindow(QMainWindow, WindowMixin):
             return
 
         defaultOpenDirPath = dirpath if dirpath else '.'
+        print('fuck defaultOpenDirPath:' , defaultOpenDirPath)
         if self.lastOpenDir and os.path.exists(self.lastOpenDir):
             defaultOpenDirPath = self.lastOpenDir
         else:
@@ -1212,6 +1221,9 @@ class MainWindow(QMainWindow, WindowMixin):
                                                      '%s - Open Directory' % __appname__, defaultOpenDirPath,
                                                      QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks))
 
+        self.save_xml_dirPat = targetDirPath
+        print('******************************************')
+        print(targetDirPath)
         self.current_index = 0
         self.importDirImages(targetDirPath)
 
@@ -1223,8 +1235,11 @@ class MainWindow(QMainWindow, WindowMixin):
         self.dirname = dirpath
         self.filePath = None
         self.fileListWidget.clear()
+
         self.mImgList = self.scanAllImages(dirpath)
+
         self.openNextImg()
+
         for imgPath in self.mImgList:
             item = QListWidgetItem(imgPath)
             self.fileListWidget.addItem(item)
@@ -1236,6 +1251,8 @@ class MainWindow(QMainWindow, WindowMixin):
         self.jump_lineEdit.setEnabled(True)
         self.find_Button.setEnabled(True)
         self.find_lineEdit.setEnabled(True)
+
+        self.save_xml_dirPath = self.dirname
 
 
 
@@ -1294,6 +1311,8 @@ class MainWindow(QMainWindow, WindowMixin):
     def openNextImg(self, _value=False):
         # Proceding prev image without dialog if having any label
         if self.autoSaving.isChecked():
+
+            self.defaultSaveDir = self.save_xml_dirPath
             if self.defaultSaveDir is not None:
                 if self.dirty is True:
                     self.saveFile()
@@ -1316,11 +1335,13 @@ class MainWindow(QMainWindow, WindowMixin):
                 filename = self.mImgList[currIndex + 1]
 
         if filename:
+
             self.loadFile(filename)
             self.current_index += 1
             self.labelNum.setText('%d/%d\t' %(self.current_index , self.img_num))
             self.current_nameEdit.setText(str(os.path.basename(filename)))
 
+        self.save_xml_dirPath = self.dirname
         xml_num = len(glob.glob(self.save_xml_dirPath + "/*.xml"))
         self.xml_labelNum.setText('xml:%d\t' % (xml_num))
 
@@ -1346,12 +1367,15 @@ class MainWindow(QMainWindow, WindowMixin):
                 imgFileName = os.path.basename(self.filePath)
                 savedFileName = os.path.splitext(imgFileName)[0]
                 savedPath = os.path.join(ustr(self.defaultSaveDir), savedFileName)
+
+
                 self._saveFile(savedPath)
         else:
             imgFileDir = os.path.dirname(self.filePath)
             imgFileName = os.path.basename(self.filePath)
             savedFileName = os.path.splitext(imgFileName)[0]
             savedPath = os.path.join(imgFileDir, savedFileName)
+
             self._saveFile(savedPath if self.labelFile
                            else self.saveFileDialog())
 
@@ -1370,6 +1394,7 @@ class MainWindow(QMainWindow, WindowMixin):
         dlg.selectFile(filenameWithoutExtension)
         dlg.setOption(QFileDialog.DontUseNativeDialog, False)
         if dlg.exec_():
+
             return dlg.selectedFiles()[0]
         return ''
 
